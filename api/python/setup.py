@@ -19,7 +19,7 @@ import numpy as np
 
 extra_compile_args = {
     'msvc' : ['/W3', '/GT', '/Gy', '/Oi', '/Ox', '/Ot', '/Oy', '/DNDEBUG', '/DUNICODE'],
-    'unix' : ['-std=c++11', '-Wall', '-Wpedantic', '-Ofast', '-DNDEBUG', '-fno-stack-protector', '-mtune=native', '-march=native']}
+    'unix' : ['-std=c++11', '-Wall', '-Wpedantic', '-Ofast', '-DNDEBUG', '-fno-stack-protector', '-mtune=generic', '-march=x86-64']}
 extra_link_args = {
     'msvc' : ['ws2_32.lib']}
 
