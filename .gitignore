@@ -19,6 +19,8 @@ vs/x64/
 # Python API
 **/build/**/*
 **/__pycache__/**/*
+dist/
+*.egg-info/
 
 # Swift Package Manager
 **/.build/**/*
