@@ -303,7 +303,7 @@ shortest_path_state* shortest_path(
 int main(int argc, const char** argv)
 {
 	unsigned int agent_seed = atoi(argv[1]);
-	set_seed(0);
+	set_seed(seed);
 	simulator_config config;
 	config.max_steps_per_movement = 1;
 	config.scent_dimension = 3;
