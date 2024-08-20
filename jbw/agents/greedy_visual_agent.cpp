@@ -493,10 +493,12 @@ int main(int argc, const char** argv)
 	std::mt19937 engine;
 	engine.seed(agent_seed);
 
-	for (unsigned int t = 0; t < 2100000; t++)
+	for (unsigned int t = 0; t < 1000000; t++)
 	{
+		double jellybean_weight = cos(t * M_PI / 100000.);
+		double onion_weight = -1 * jellybean_weight;
 		shortest_path_state* new_path;
-		if ((t / 150000) % 2 == 0) {
+		if (jellybean_weight > onion_weight) {
 			new_path = shortest_path(
 					agent->current_vision, config.vision_range,
 					jellybean_color, wall_color, onion_color,
@@ -621,12 +623,8 @@ wall_in_front = item_exists<true>(agent->current_vision, config.vision_range, co
 			FILE* out = stdout;
 			fprintf(out, "[iteration %u]\n"
 				"  Agent position: ", t);
-			double reward;
-			if ((t / 150000) % 2 == 0) {
-				reward = ( 2. * (double) window_collected_items[jellybean_index] - window_collected_items[onion_index] + 0.1 * window_collected_items[banana_index]) / (window_size);
-			} else {
-				reward = ( 2. * (double) window_collected_items[onion_index] - window_collected_items[jellybean_index] + 0.1 * window_collected_items[banana_index]) / (window_size);
-			}
+			double reward = jellybean_weight * (double) window_collected_items[jellybean_index] + onion_weight * window_collected_items[onion_index] + 0.1 * window_collected_items[banana_index];
+			reward /= window_size;
 			for (unsigned int i = 0; i < config.item_types.length; i++)
 			{
 				window_collected_items[i] = 0;
@@ -641,15 +639,13 @@ wall_in_front = item_exists<true>(agent->current_vision, config.vision_range, co
 			window_collected_items[i] += delta_collected_items[i];
 			previous_collected_items[i] = agent->collected_items[i];
 		}
-		double reward = 0;
-		if ((t / 150000) % 2 == 0) {
-			reward = ( 2. * (double) delta_collected_items[jellybean_index] - delta_collected_items[onion_index] + 0.1 * delta_collected_items[banana_index]);
-		} else {
-			reward = ( 2. * (double) delta_collected_items[onion_index] - delta_collected_items[jellybean_index] + 0.1 * delta_collected_items[banana_index]);
-		}
+		double reward = jellybean_weight * (double) delta_collected_items[jellybean_index] + onion_weight * delta_collected_items[onion_index] + 0.1 * delta_collected_items[banana_index];
 		fprintf(out, "%lf\n", reward);
 	}
 	fclose(out);
+
+	FILE* out2 = fopen("/data/continual-rl/jbw_greedy_search/seeds.csv", "a");
+	fprintf(out2, "%i,%i,%i,%i\n", agent_seed, agent->collected_items[0], agent->collected_items[1], agent->collected_items[2]);
 
 	if (best_path != nullptr) {
 		free(*best_path);
