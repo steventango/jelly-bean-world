@@ -493,7 +493,7 @@ int main(int argc, const char** argv)
 	std::mt19937 engine;
 	engine.seed(agent_seed);
 
-	for (unsigned int t = 0; t < 3600000; t++)
+	for (unsigned int t = 0; t < 7200000; t++)
 	{
 		double jellybean_weight = cos(t * M_PI / 100000.);
 		double onion_weight = -1 * jellybean_weight;
