@@ -380,7 +380,7 @@ int main(int argc, const char** argv)
 	config.item_types[1].intensity_fn.fn = constant_intensity_fn;
 	config.item_types[1].intensity_fn.arg_count = 1;
 	config.item_types[1].intensity_fn.args = (float*) malloc(sizeof(float) * 1);
-	config.item_types[1].intensity_fn.args[0] = -6.0f;
+	config.item_types[1].intensity_fn.args[0] = -4.0f;
 	config.item_types[1].interaction_fns = (energy_function<interaction_function>*)
 			malloc(sizeof(energy_function<interaction_function>) * config.item_types.length);
 	config.item_types[2].intensity_fn.fn = constant_intensity_fn;
@@ -392,13 +392,13 @@ int main(int argc, const char** argv)
 
 	set_interaction_args(config.item_types.data, 0, 0, piecewise_box_interaction_fn, {3.0f, 10.0f, 1.0f, -2.0f});
 	set_interaction_args(config.item_types.data, 0, 1, zero_interaction_fn, {});
-	set_interaction_args(config.item_types.data, 0, 2, piecewise_box_interaction_fn, {25.0f, 50.0f, -50.0f, -10.0f});
+	set_interaction_args(config.item_types.data, 0, 2, zero_interaction_fn, {});
 
 	set_interaction_args(config.item_types.data, 1, 0, zero_interaction_fn, {});
 	set_interaction_args(config.item_types.data, 1, 1, zero_interaction_fn, {});
 	set_interaction_args(config.item_types.data, 1, 2, zero_interaction_fn, {});
 
-	set_interaction_args(config.item_types.data, 2, 0, piecewise_box_interaction_fn, {25.0f, 50.0f, -50.0f, -10.0f});
+	set_interaction_args(config.item_types.data, 2, 0, zero_interaction_fn, {});
 	set_interaction_args(config.item_types.data, 2, 1, zero_interaction_fn, {});
 	set_interaction_args(config.item_types.data, 2, 2, piecewise_box_interaction_fn, {3.0f, 10.0f, 1.0f, -2.0f});
 
@@ -493,9 +493,9 @@ int main(int argc, const char** argv)
 	std::mt19937 engine;
 	engine.seed(agent_seed);
 
-	for (unsigned int t = 0; t < 7200000; t++)
+	for (unsigned int t = 0; t < 5000000; t++)
 	{
-		double jellybean_weight = cos(t * M_PI / 100000.);
+		double jellybean_weight = sin(t * M_PI / 50000.);
 		double onion_weight = -1 * jellybean_weight;
 		shortest_path_state* new_path;
 		if (jellybean_weight > onion_weight) {
