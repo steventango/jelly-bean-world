@@ -486,12 +486,13 @@ int main(int argc, const char** argv)
 		window_collected_items[i] = 0;
 	}
 	char filename[100];
-	sprintf(filename, "/data/continual-rl/jbw_greedy_search/txt/%u.txt", agent_seed);
+	sprintf(filename, "/data/continual-rl/jbw_epsilon_greedy_search/txt/%u.txt", agent_seed);
 	FILE* out = fopen(filename, "w");
 	fclose(out);
 	out = fopen(filename, "a");
 	std::mt19937 engine;
 	engine.seed(agent_seed);
+	std::uniform_real_distribution<float> uniform(0,1);
 
 	for (unsigned int t = 0; t < 5000000; t++)
 	{
@@ -552,7 +553,19 @@ wall_in_front = item_exists<true>(agent->current_vision, config.vision_range, co
 
 		status action_status;
 		sim_data.waiting = true;
-		if (best_path == nullptr) {
+		double epsilon = 0.1;
+		if (uniform(engine) < epsilon) {
+			int random_action = engine() % 4;
+			if (random_action == 0) {
+				action_status = sim.move(agent_id, direction::UP, 1);
+			} else if (random_action == 1) {
+				action_status = sim.move(agent_id, direction::DOWN, 1);
+			} else if (random_action == 2) {
+				action_status = sim.move(agent_id, direction::LEFT, 1);
+			} else {
+				action_status = sim.move(agent_id, direction::RIGHT, 1);
+			}
+		} else if (best_path == nullptr) {
 			if ((engine() % 2) == 0) {
 				if (!item_exists(agent->current_vision, config.vision_range, config.color_dimension, onion_color, 0, 1)) {
 					action_status = sim.move(agent_id, direction::UP, 1);
@@ -644,7 +657,7 @@ wall_in_front = item_exists<true>(agent->current_vision, config.vision_range, co
 	}
 	fclose(out);
 
-	FILE* out2 = fopen("/data/continual-rl/jbw_greedy_search/seeds.csv", "a");
+	FILE* out2 = fopen("/data/continual-rl/jbw_epsilon_greedy_search/seeds.csv", "a");
 	fprintf(out2, "%i,%i,%i,%i\n", agent_seed, agent->collected_items[0], agent->collected_items[1], agent->collected_items[2]);
 
 	if (best_path != nullptr) {
